@@ -13,7 +13,7 @@
 
     <ul>
         {% for book in books %}
-        <li>{{ book.title }} - {{ book.author }} - {{book.rating }}</li>
+        <li><a href="/delete/{{ book.id }}">Delete</a>  {{ book.title }} - {{ book.author }} - <a href="/rating/{{ book.id }}">{{book.rating }}</a></li>
         {% endfor %}
     </ul>
 

@@ -27,15 +27,8 @@ if not os.path.isfile("sqlite://new_books.sqlite3"):
     db.create_all()
 
 
-#all_books = []
-
-
 @app.route('/')
 def home():
-    #print(all_books)
-    #if all_books == []:
-    #    return render_template("index.html", books="empty")
-    #else:
     all_books = [book for book in db.session.query(Books).all()]
     return render_template("index.html", books=all_books)
 
@@ -52,6 +45,29 @@ def add():
         all_books = [book for book in db.session.query(Books).all()]
         return render_template("index.html", books=all_books)
     return render_template("add.html")
+
+
+@app.route("/rating/<book_id>", methods=["GET", "POST"])
+def rating(book_id):
+    if request.method == "POST":
+        edit_book = Books.query.get(book_id)
+        new_rating = request.form["new_rating"]
+        edit_book.rating = new_rating
+        db.session.commit()
+        all_books = [book for book in db.session.query(Books).all()]
+        return render_template("index.html", books=all_books)
+    if request.method == "GET":
+        edit_book = Books.query.get(book_id)
+        return render_template("edit_rating.html", book=edit_book)
+
+
+@app.route("/delete/<book_id>", methods=["GET", "POST"])
+def delete(book_id):
+    edit_book = Books.query.get(book_id)
+    db.session.delete(edit_book)
+    db.session.commit()
+    all_books = [book for book in db.session.query(Books).all()]
+    return render_template("index.html", books=all_books)
 
 
 if __name__ == "__main__":
